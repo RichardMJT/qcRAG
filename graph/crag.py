@@ -55,6 +55,7 @@ class GraphPoint():
         # self.retrieval_grader = get_retrieval_grader(model = model, temperature = temperature, api_key = api_key)
         # self.question_rewriter = get_question_rewriter(model = model, temperature = temperature, api_key = api_key)
         # self.web_search_tool = get_web_search_tool()
+
         self.retriever = retriever
         self.rag_chain = rag_chain
         self.retrieval_grader = retrieval_grader
@@ -120,7 +121,11 @@ class GraphPoint():
             score = self.retrieval_grader.invoke(
                 {"question": question, "document": d.page_content}
             )
-            grade = score.binary_score
+            # print(score)
+            if score :
+                grade = score.binary_score
+            else:
+                grade = None
             if grade == "yes":
                 print("---GRADE: DOCUMENT RELEVANT---")
                 filtered_docs.append(d)

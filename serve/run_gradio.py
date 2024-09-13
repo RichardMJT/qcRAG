@@ -22,7 +22,7 @@ api_key=''
 embedding='bge'
 
 class model_center():
-    def __init__(self,model:str='qwen-max', temperature:float=0.0, top_k:int=4, chat_history:list=[], search_type="similarity", search_kwargs={'k': 4},):
+    def __init__(self,model:str='llama3.1', temperature:float=0.0, top_k:int=4, chat_history:list=[], search_type="similarity", search_kwargs={'k': 4},):
         self.model = model
         self.temperature = temperature
         self.top_k = top_k

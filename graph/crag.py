@@ -121,9 +121,11 @@ class GraphPoint():
             score = self.retrieval_grader.invoke(
                 {"question": question, "document": d.page_content}
             )
-            # print(score)
+            # print("score")
+            # print(score.tool_calls[0]['args']['binary_score'])
             if score :
-                grade = score.binary_score
+                # grade = score.binary_score 使用在线大模型时的调用方法
+                grade = score.tool_calls[0]['args']['binary_score'] #使用chatollama时的获取方法
             else:
                 grade = None
             if grade == "yes":
@@ -153,6 +155,11 @@ class GraphPoint():
 
         # Re-write question
         better_question = self.question_rewriter.invoke({"question": question})
+        # better_question = better_question.content #这是使用chatollama绑定工具后输出的格式， 如果更换别的大模型，可能需要更换代码编写方法
+        print('---------------------------------')
+        print(better_question)
+        print('---------------------------------')
+        better_question = better_question.content
         return {"documents": documents, "question": better_question}
 
 
@@ -166,12 +173,15 @@ class GraphPoint():
         Returns:
             state (dict): Updates documents key with appended web results
         """
-
+        
         print("---WEB SEARCH---")
         question = state["question"]
         documents = state["documents"]
-
+        print("-----------question------------")
+        print( question)
+        print("-----------question------------")
         # Web search
+        
         docs = self.web_search_tool.run(question)
         web_results = "\n".join([d for d in docs])
         web_results = Document(page_content=web_results)

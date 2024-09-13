@@ -16,7 +16,7 @@ class GradeDocuments(BaseModel):
 def get_retrieval_grader(model, temperature, api_key):
     # LLM with function call
     llm = get_llm(model=model, temperature=temperature, api_key=api_key)
-    structured_llm_grader = llm.with_structured_output(GradeDocuments)
+    structured_llm_grader = llm.bind_tools([GradeDocuments])
 
     # Prompt
     system = """You are a grader assessing relevance of a retrieved document to a user question. \n 

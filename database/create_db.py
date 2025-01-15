@@ -33,7 +33,7 @@ def get_files(dir_path):
     return file_list
 
 
-def file_loader(file, loaders):
+def file_loader(file,loaders):
     if isinstance(file, tempfile._TemporaryFileWrapper):
         file = file.name
     if not os.path.isfile(file):

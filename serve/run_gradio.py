@@ -16,13 +16,13 @@ from tool.search import get_web_search_tool
 from graph.crag import GraphPoint
 import re
 
-file_path='../knowledge_db'
-persist_path = '../vector_db/chroma'
+file_path='crag/knowledge_db'
+persist_path = 'crag/vector_db/chroma'
 api_key=''
 embedding='bge'
 
 class model_center():
-    def __init__(self,model:str='llama3.1', temperature:float=0.0, top_k:int=4, chat_history:list=[], search_type="similarity", search_kwargs={'k': 4},):
+    def __init__(self,model:str='qwen-max', temperature:float=0.0, top_k:int=4, chat_history:list=[], search_type="similarity", search_kwargs={'k': 4},):
         self.model = model
         self.temperature = temperature
         self.top_k = top_k
@@ -40,6 +40,7 @@ class model_center():
     def get_graph(self):
         graph = GraphPoint(self.retriever, self.rag_chain, self.retrieval_grader, self.question_rewriter, self.web_search_tool)
         app = graph.bulid_graph()
+        
         return app
     
     def get_answer(self, question:str=None):
@@ -48,7 +49,8 @@ class model_center():
         answer =  result['generation']
         answer = re.sub(r"\\n", '<br/>', answer)
         self.chat_history.append((question,answer)) #更新历史记录
-        return "", self.chat_history  #返回本次回答和更新后的历史记录
+        # return "", self.chat_history  #返回本次回答和更新后的历史记录
+        return answer
     def clear_history(self):
         self.chat_history.clear()
         

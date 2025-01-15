@@ -67,7 +67,7 @@ class GraphPoint():
         Retrieve documents
 
         Args:
-            state (dict): The current graph state
+            state (dict):  
 
         Returns:
             state (dict): New key added to state, documents, that contains retrieved documents

@@ -43,7 +43,7 @@ def file_loader(file,loaders):
     if file_type == 'pdf':
         loaders.append(PyMuPDFLoader(file))
     elif file_type == 'md':
-        pattern = r"不存在|风控"
+        pattern = r"不存在|风控" 
         match = re.search(pattern, file)
         if not match:
             loaders.append(UnstructuredMarkdownLoader(file))

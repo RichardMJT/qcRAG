@@ -33,14 +33,14 @@ async def response(message:Message):
     return {"message": message.askmessage}
 
 
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()  # 接受WebSocket连接
-    while True:
-        data = await websocket.receive_text()  # 接收来自客户端的消息
-        answer = model_center.get_answer(data)
-        print(answer)
-        await websocket.send_text(f"{answer}") 
+# @app.websocket("/ws")
+# async def websocket_endpoint(websocket: WebSocket):
+#     await websocket.accept()  # 接受WebSocket连接
+#     while True:
+#         data = await websocket.receive_text()  # 接收来自客户端的消息
+#         answer = model_center.get_answer(data)
+#         print(answer)
+#         await websocket.send_text(f"{answer}") 
 
 
 

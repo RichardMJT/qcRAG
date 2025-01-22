@@ -37,14 +37,14 @@ class model_center():
         self.question_rewriter = get_question_rewriter(model = model, temperature = temperature, api_key = api_key)
         self.web_search_tool = get_web_search_tool()
 
-    def get_graph(self):
+    async def get_graph(self):
         graph = GraphPoint(self.retriever, self.rag_chain, self.retrieval_grader, self.question_rewriter, self.web_search_tool)
         app = graph.bulid_graph()
         
         return app
     
-    def get_answer(self, question:str=None):
-        app = self.get_graph()
+    async def get_answer(self, question:str=None):
+        app = await self.get_graph()
         result = app.invoke({"question": question,"chat_history": self.chat_history}) 
         answer =  result['generation']
         answer = re.sub(r"\\n", '<br/>', answer)
@@ -86,6 +86,7 @@ def setup(model_center):
 
     demo.launch()
 
-if __name__ == "__main__":
-    model_center = model_center()
-    setup(model_center)
+# if __name__ == "__main__":
+#     model_center = model_center()
+#     setup(model_center)
+model_center = model_center()

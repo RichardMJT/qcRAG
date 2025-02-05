@@ -1,0 +1,41 @@
+{
+  "type": "Image",
+  "element_id": "9bde1e90b7d6d01e1ad54efa7d05f93e",
+  "text": "",
+  "metadata": {
+      "coordinates": {
+          "points": [
+              [
+                  250.0,
+                  120.9724999999998
+              ],
+              [
+                  250.0,
+                  254.8613888888888
+              ],
+              [
+                  687.7777777777777,
+                  254.8613888888888
+              ],
+              [
+                  687.7777777777777,
+                  120.9724999999998
+              ]
+          ],
+          "system": "PixelSpace",
+          "layout_width": 1653,
+          "layout_height": 2339
+      },
+      "last_modified": "2024-08-05T20:39:39",
+      "filetype": "application/pdf",
+      "languages": [
+          "chi_sim",
+          "eng"
+      ],
+      "page_number": 1,
+      "image_path": "/home/ezdx/\u6587\u6863/code/crag/knowledge_base/private/content/\u5fae\u68c0\u6d4bWeD-1\u53ef\u89c6\u5316\u624b\u6301\u6838\u9178\u6052\u6e29\u8367\u5149\u68c0\u6d4b\u4eea/pictures/figure-1-1.jpg",
+      "file_directory": "/home/ezdx/\u6587\u6863/code/crag/knowledge_base/private/content",
+      "filename": "\u5fae\u68c0\u6d4bWeD-1\u53ef\u89c6\u5316\u624b\u6301\u6838\u9178\u6052\u6e29\u8367\u5149\u68c0\u6d4b\u4eea.pdf"
+  }
+}
+  

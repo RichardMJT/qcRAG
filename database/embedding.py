@@ -10,16 +10,17 @@ os.environ['https_proxy'] = '127.0.0.1:7890'
 
 
 ## 从HuggingFace获取使用向量化模型
-def get_embedding(embedding: str):
-    if embedding == 'bge':
-        model_name = 'BAAI/bge-large-zh-v1.5'
-        model_kwargs = {'device': 'cuda'}  # 需要安装GPU版本的torch ，如果没有，这里cuda改为cpu
-        encode_kwargs = {'normalize_embeddings': True}
-        embeddings = HuggingFaceBgeEmbeddings(
-            model_name=model_name,
-            model_kwargs=model_kwargs,
-            encode_kwargs=encode_kwargs,
-        )
-        return embeddings
-    else:
-        raise ValueError(f"embedding {embedding} not support ")
+def get_embedding(embedding: str = 'bge'):
+    model_name = 'BAAI/bge-large-zh-v1.5'
+    model_kwargs = {'device': 'cuda'}  # 需要安装GPU版本的torch ，如果没有，这里cuda改为cpu
+    encode_kwargs = {'normalize_embeddings': True}
+    query_instruction = "为这个句子生成表示以用于检索相关文章："
+    embeddings = HuggingFaceBgeEmbeddings(
+        model_name=model_name,
+        model_kwargs=model_kwargs,
+        encode_kwargs=encode_kwargs,
+        query_instruction=query_instruction
+    )
+    return embeddings
+if __name__ == "__main__":
+    result = get_embedding('bge')

@@ -2,9 +2,13 @@ import os
 import sys
 absPath = os.path.abspath(__file__)   #返回代码段所在的位置，肯定是在某个.py文件中
 temPath01 = os.path.dirname(absPath)    #往上返回一级目录，得到文件所在的路径
-temPath = os.path.dirname(temPath01)    #在往上返回一级，得到文件夹所在的路径
+temPath02 = os.path.dirname(temPath01)    #在往上返回一级，得到文件夹所在的路径
+temPath03 = os.path.dirname(temPath02) #在往上返回一级，得到文件夹所在的路径
+temPath04 = os.path.dirname(temPath03) #在往上返回一级，得到文件夹所在的路径
 sys.path.append(temPath01)   
-sys.path.append(temPath)   
+sys.path.append(temPath02)
+sys.path.append(temPath03)
+sys.path.append(temPath04)     
 
 from typing import List
 from typing_extensions import TypedDict
@@ -17,6 +21,10 @@ from llm_chian.question_re_writer import get_question_rewriter
 from tool.search import get_web_search_tool
 
 
+
+
+# 如果大模型觉得有必要让用户补充信息，与用户交互获得提示信息（）
+# 创建管理系统用于添加新的文档
 
 
 class GraphState(TypedDict):
@@ -45,16 +53,6 @@ class GraphPoint():
             Args:
                
         """
-        file_path = "../knowledge_db"
-        persist_path = "../vector_db/chroma"
-        ## 创建向量数据库
-        # vectordb = get_vectordb(file_path, persist_path)
-        ## 创建检索器
-        # self.retriever = vectordb.as_retriever(search_type=search_type, search_kwargs=search_kwargs)
-        # self.rag_chain = get_rag_chain(model = model, temperature = temperature, api_key = api_key)
-        # self.retrieval_grader = get_retrieval_grader(model = model, temperature = temperature, api_key = api_key)
-        # self.question_rewriter = get_question_rewriter(model = model, temperature = temperature, api_key = api_key)
-        # self.web_search_tool = get_web_search_tool()
 
         self.retriever = retriever
         self.rag_chain = rag_chain
@@ -62,7 +60,7 @@ class GraphPoint():
         self.question_rewriter = question_rewriter
         self.web_search_tool = web_search_tool
     
-    def retrieve(self, state):
+    async def retrieve(self, state):
         """
         Retrieve documents
 
@@ -76,7 +74,8 @@ class GraphPoint():
         question = state["question"]
 
         # Retrieval
-        documents = self.retriever.get_relevant_documents(question)
+        # documents = self.retriever.get_relevant_documents(question)
+        documents = await self.retriever.search_docs(query=question)
         return {"documents": documents, "question": question}
 
 
@@ -94,14 +93,19 @@ class GraphPoint():
         question = state["question"]
         documents = state["documents"]
 
+        
+        context = []
+        for d in documents:
+            context.append(d.page_content)
+
         # RAG generation
-        generation = self.rag_chain.invoke({"context": documents, "question": question})
+        generation = self.rag_chain.invoke({"context": str(context), "question": question})
         return {"documents": documents, "question": question, "generation": generation}
 
 
     def grade_documents(self,state):
         """
-        Determines whether the retrieved documents are relevant to the question.
+        判断检索到的文件是否与问题相关.在此处还要使用知识图谱进行扩充
 
         Args:
             state (dict): The current graph state
@@ -110,7 +114,7 @@ class GraphPoint():
             state (dict): Updates documents key with only filtered relevant documents
         """
 
-        print("---CHECK DOCUMENT RELEVANCE TO QUESTION---")
+        print("---检查文档与检索到问题之间的相关性---")
         question = state["question"]
         documents = state["documents"]
 
@@ -121,22 +125,27 @@ class GraphPoint():
             score = self.retrieval_grader.invoke(
                 {"question": question, "document": d.page_content}
             )
-            # print("score")
-            # print(score.tool_calls[0]['args']['binary_score'])
+            
             if score :
-                # grade = score.binary_score 使用在线大模型时的调用方法
-                grade = score.tool_calls[0]['args']['binary_score'] #使用chatollama时的获取方法
+                try:
+                    # grade = score.binary_score # 使用在线大模型时的调用方法
+                    grade = score.tool_calls[0]['args']['binary_score'] #使用chatollama时的获取方法
+                    # print("=================grade====================")
+                    # print(grade)
+                    # print("=================grade====================")
+                except:
+                    grade = None
+                
             else:
                 grade = None
             if grade == "yes":
-                print("---GRADE: DOCUMENT RELEVANT---")
+                print("---文本相关---")
                 filtered_docs.append(d)
             else:
-                print("---GRADE: DOCUMENT NOT RELEVANT---")
-                web_search = "Yes"
-                continue
+                print("---文本不相关---")
+            if len(filtered_docs) == 0:
+                web_search = "Yes"  
         return {"documents": filtered_docs, "question": question, "web_search": web_search}
-
 
     def transform_query(self, state):
         """
@@ -156,9 +165,9 @@ class GraphPoint():
         # Re-write question
         better_question = self.question_rewriter.invoke({"question": question})
         # better_question = better_question.content #这是使用chatollama绑定工具后输出的格式， 如果更换别的大模型，可能需要更换代码编写方法
-        print('---------------------------------')
-        print(better_question)
-        print('---------------------------------')
+        # print('---------------------------------')
+        # print(better_question)
+        # print('---------------------------------')
         better_question = better_question.content
         return {"documents": documents, "question": better_question}
 
@@ -174,18 +183,20 @@ class GraphPoint():
             state (dict): Updates documents key with appended web results
         """
         
-        print("---WEB SEARCH---")
+        print("---WEB 搜索---")
         question = state["question"]
         documents = state["documents"]
-        print("-----------question------------")
-        print( question)
-        print("-----------question------------")
         # Web search
         
         docs = self.web_search_tool.run(question)
         web_results = "\n".join([d for d in docs])
         web_results = Document(page_content=web_results)
         documents.append(web_results)
+
+        # print("-----------web_results------------")
+        # print(web_results)
+        # print("-----------web_results------------")
+
 
         return {"documents": documents, "question": question}
 

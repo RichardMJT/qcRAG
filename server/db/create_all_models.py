@@ -18,13 +18,6 @@ import server.db.models  # 确保模型被导入以便创建表
 from sqlalchemy import Column, Integer, String, DateTime, JSON, func, ForeignKey
 from server.db.base import async_engine, AsyncSessionLocal
 
-# from server.db.models.user_model import UserModel
-# from server.db.models.conversation_model import ConversationModel
-# from server.db.models.message_model import MessageModel
-# from server.db.models.knowledge_base_model import KnowledgeBaseModel
-# from server.db.models.knowledge_file_model import KnowledgeFileModel
-# from server.db.models.knowledge_file_model import FileDocModel
-
 
 from sqlalchemy import Column, Integer, String, DateTime, JSON, ForeignKey, func, CHAR
 from sqlalchemy.orm import relationship

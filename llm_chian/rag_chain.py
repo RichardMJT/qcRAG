@@ -25,4 +25,6 @@ def get_rag_chain(model, temperature, api_key):
     rag_chain = prompt | llm | StrOutputParser()
 
     return rag_chain
+if __name__ == "__main__":
+    get_rag_chain('qwen-max', 0.0, "sk-83f939a7ee424d588c176662a9636061")
 

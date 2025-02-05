@@ -14,3 +14,4 @@ from server.db.models.message_model import MessageModel
 from server.db.models.knowledge_base_model import KnowledgeBaseModel
 from server.db.models.knowledge_file_model import KnowledgeFileModel
 from server.db.models.knowledge_file_model import FileDocModel
+from server.db.models.detected_data_model import DetectedDataModel

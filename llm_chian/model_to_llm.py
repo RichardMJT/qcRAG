@@ -4,17 +4,26 @@ from langchain_community.llms import Ollama
 from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+from langchain_openai import ChatOpenAI
+
 
 # from dotenv import find_dotenv, load_dotenv
 
 # load_dotenv(find_dotenv())
 
-def get_llm(model:str=None, temperature:float=0.0, api_key:str=None):
+def get_llm(model, temperature, api_key):
     llm = None
-    if model == 'qwen-max':
-        llm = ChatTongyi(model=model, temperature = temperature, api_key= api_key)
-    if model == 'llama3.1':
+    if model == 'qwen-max' or model == 'qwen-plus' :
+        llm = ChatOpenAI(
+                api_key=api_key,
+                base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+                model=model,
+            )
+    elif model == 'llama3.1':
         llm = ChatOllama(model=model, temperature = temperature)
-    if model == 'qwen2':
+    elif model == 'qwen2':
         llm = ChatOllama(model=model,temperature = temperature)
     return llm
+
+if __name__ == "__main__":
+    get_llm('qwen-max')

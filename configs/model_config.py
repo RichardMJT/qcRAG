@@ -2,7 +2,9 @@ import os
 
 MODEL_ROOT_PATH = ""
 
-TEMPERATURE = 1.0
+API_KEY = "sk-83f939a7ee424d588c176662a9636061"
+
+TEMPERATURE = 0.0
 MAX_TOKENS = 4096
 # 默认让大模型采用流式输出
 STREAM = True
